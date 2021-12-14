@@ -9,8 +9,8 @@ public class MinhaThread extends Thread {
 	private double erro;
 	private float [][]matrizInicial;
 	private float []vetorInicial;
-	private float []vetorCalculado;
-	private float []vetorCalculadoAnt;
+	private float []vetorX;
+	private float []vetorXNovo;
 	
 	public MinhaThread(int ini, int N, int nThreads, float[][] matrizInicial, float[] vetorInicial, float[]vetorCalculado, float[]vetorCalculadoAnt, int iteracoes, double erro, int contador) {
 		this.ini = ini;
@@ -20,8 +20,8 @@ public class MinhaThread extends Thread {
 		this.erro = erro;
 		this.matrizInicial=matrizInicial;
 		this.vetorInicial=vetorInicial;
-		this.vetorCalculado = vetorCalculado;
-		this.vetorCalculadoAnt = vetorCalculadoAnt;
+		this.vetorX = vetorCalculado;
+		this.vetorXNovo = vetorCalculadoAnt;
 		this.contador = contador;
 	}
 	
@@ -36,23 +36,27 @@ public class MinhaThread extends Thread {
 	    while (contador < iteracoes) {
 		    for(i = ini; i < N; i+=nThreads) {
 	    		soma = 0;
+	    		
 	    		for(j=0; j<N; j++) {
+	    			
 	    			if (i != j) {
-	    				soma += matrizInicial[i][j] * vetorCalculado[i];	        		
+	    				soma += matrizInicial[i][j] * vetorX[j];	        		
 	    			}
 	    			else {
 	    				dp =  matrizInicial[i][j];
 	    			}
 	    		}
-	    		vetorCalculado[i] = (vetorInicial[i] - soma) / dp;
+	    		
+	    		vetorXNovo[i] = (vetorInicial[i] - soma) / dp;
 	    	}
 	    	
 	    	
-			if ((calcularNorma(vetorCalculadoAnt) - calcularNorma(vetorCalculado)) < erro) {
+			if (Math.abs(calcularNorma(vetorX) - calcularNorma(vetorXNovo)) < erro) {
+				System.out.println("Iteracoes: " + contador);
 				contador = iteracoes;
 			}
 			else {
-				vetorCalculadoAnt = vetorCalculado;
+				vetorX = vetorXNovo;
 			}
 				
 	    	contador++;
